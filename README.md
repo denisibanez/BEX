@@ -1,4 +1,4 @@
-# Bex
+# BEX TEST
 
 > A Vue.js project
 
