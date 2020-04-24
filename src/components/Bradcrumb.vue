@@ -63,8 +63,11 @@ export default {
       color: #de4b4b;
       
       &.bradcrumb-active {
-        padding: 0 2px;
+        padding: 0 1px;
         font-weight: bold;
+        background-color: #de4b4b;
+        color: #ffffff;
+        font-size:12px;
       }
     }
 

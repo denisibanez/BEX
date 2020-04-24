@@ -9,9 +9,8 @@
                 <a class="aside-link">
                   <span>&#60;</span> Alterar forma de pagamento
                 </a>
-
                 <p class="aside-text">
-                  Adicione um novo cartão de crédito
+                  Adicione um novo <br>cartão de crédito
                 </p>
 
                 <card-component>
@@ -23,80 +22,156 @@
       
         <b-col xl="9">
           <div class="content-body-wrapper">
-            <b-row class="d-none d-xl-block">
+            <b-row>
               <b-col offset-xl="2" xl="6">
-                <bradcrumb>
+                <bradcrumb class="d-none d-xl-block">
                 </bradcrumb>
                 
                 <div class="form-container">
-                  <b-row>
-                    <b-col md="12">
-                      <div class="input-group mb-5">
-                        <input 
-                          type="text"
-                          class="form-control reset"
-                          placeholder="Número do cartão" 
-                          aria-label="cardNumber" />
-                      </div>
-                    </b-col>
-                  </b-row>
+                  <ValidationObserver
+                    v-slot="{ valid }"
+                    ref="observer"
+                    tag="form"
+                    @submit.prevent="submit()"
+                  >
+                    <b-row>
+                      <b-col md="12">
+                        <div class="input-group mb-5 input-container">
+                          <ValidationProvider
+                            v-slot="{errors}"
+                            :rules="'checkCard'"
+                            name="cardNumber"
+                          >
+                            <input 
+                              type="text"
+                              id="cardNumber"
+                              pattern=".+"
+                              required                                                    
+                              aria-label="cardNumber"
+                              v-model="form.cardNumber"
+                              @change="changeInput($event)"
+                              :class="{ 'error-text' : errors[0] }"
+                              v-mask="'#### #### #### ####'" />
+                            <label :class="[{ 'error-text' : errors[0] }, 'label']" for="cardNumber">Número do cartão</label>
+                            <span class="error">
+                              {{ errors[0] }}
+                            </span>
+                          </ValidationProvider>
+                            
+                        </div>
+                      </b-col>
+                    </b-row>
 
-                  <b-row>
-                    <b-col md="12">
-                      <div class="input-group mb-5">
-                        <input 
-                          type="text"
-                          class="form-control reset"
-                          placeholder="Nome (Igual ao do cartão)" 
-                          aria-label="cardName" />
-                      </div>
-                    </b-col>
-                  </b-row>
+                    <b-row>
+                      <b-col md="12">
+                        <div class="input-group mb-5">
+                          <ValidationProvider
+                            v-slot="{errors}"
+                            :rules="'namePerson'"
+                            name="cardName"
+                          >
+                            <input 
+                              type="text"
+                              id="cardName"
+                              pattern=".+"
+                              required
+                              :class="{ 'error-text' : errors[0] }"
+                              v-model="form.cardName"
+                              @change="changeInput($event)"
+                              aria-label="cardName" />
+                            <label :class="[{ 'error-text' : errors[0] }, 'label']" for="cardName">Nome (Igual ao cartão)</label>
+                            <span class="error">
+                              {{ errors[0] }}
+                            </span>
+                          </ValidationProvider>
+                        </div>
+                      </b-col>
+                    </b-row>
 
-                  <b-row>
-                    <b-col sm="12" md="6">
-                      <div class="input-group mb-5">
-                        <input 
-                          type="text"
-                          class="form-control reset"
-                          placeholder="Validade" 
-                          aria-label="cardValidate" />
-                      </div>
-                    </b-col>
+                    <b-row>
+                      <b-col sm="12" md="6">
+                        <div class="input-group mb-5 input-container">
+                          <ValidationProvider
+                            v-slot="{errors}"
+                            :rules="'required|minData'"
+                            name="cardValidate"
+                          >
+                            <input 
+                              type="text"
+                              id="cardValidate"
+                              pattern=".+"
+                              required
+                              v-model="form.cardValidate"
+                              :class="{ 'error-text' : errors[0] }"
+                              @change="changeInput($event)"
+                              aria-label="cardValidate"
+                              v-mask="'##/##'"  />
+                            <label :class="[{ 'error-text' : errors[0] }, 'label']" for="cardValidate">Validade</label>
+                            <span class="error">
+                              {{ errors[0] }}
+                            </span>
+                          </ValidationProvider>
+                        </div>
+                      </b-col>
 
-                    <b-col sm="12" md="6">
-                      <div class="input-group mb-5">
-                        <input 
-                          type="text"
-                          class="form-control reset"
-                          placeholder="CVV" 
-                          aria-label="cardSecurity" />
-                           <div class="icon-wrapper">
-                              <div class="info-icon">
-                                <b-icon-info></b-icon-info>
+                      <b-col sm="12" md="6">
+                        <div class="input-group mb-5 input-container">
+                          <ValidationProvider
+                            v-slot="{errors}"
+                            :rules="'required|minCvv'"
+                            name="cvv"
+                          >
+                            <input 
+                              type="text"
+                              id="cvv"
+                              pattern=".+"
+                              required
+                              v-model="form.cardSecurity"
+                              aria-label="cardSecurity"
+                              :class="{ 'error-text' : errors[0] }"
+                              @change="changeInput($event)"
+                              v-mask="'###'"  />
+
+                              <label :class="[{ 'error-text' : errors[0] }, 'label']" for="cvv">CVV</label>
+
+                              <div :class="[{ 'error-icon' : errors[0] }, 'icon-wrapper']">
+                                <div class="info-icon">
+                                  <b-icon-info></b-icon-info>
+                                </div>
                               </div>
-                          </div>
-                      </div>
-                    </b-col>
-                  </b-row>
 
-                  <b-row>
-                    <b-col md="12">
-                      <div>
-                        <b-form-select
-                          class="select-default mb-5 reset"
-                          v-model="form.selected"
-                          :options="select.options"
-                        ></b-form-select>
-                      </div>
-                    </b-col>
-                  </b-row>
+                              <span class="error">
+                                {{ errors[0] }}
+                              </span>
+                            </ValidationProvider>
+                        </div>
+                      </b-col>
+                    </b-row>
 
-                  <b-row>
-                    <b-col md="12">
-                      <b-button class="btn-next">Continuar</b-button>
-                    </b-col>
-                  </b-row>
+                    <b-row>
+                      <b-col md="12">
+                        <div>
+                          <ValidationProvider
+                            v-slot="{errors}"
+                            :rules="'required'"
+                            name="cvv"
+                          >
+                            <b-form-select
+                              :class="[{ 'active' : select.selected }, 'select-default mb-5 reset']"
+                              v-model="select.selected"
+                              :options="select.options"
+                            ></b-form-select>
+                          </ValidationProvider>
+                        </div>
+                      </b-col>
+                    </b-row>
+
+                    <b-row>
+                      <b-col md="12">
+                        <b-button class="btn-next" :disabled="!valid" @click="submit">Continuar</b-button>
+                      </b-col>
+                    </b-row>
+                  </ValidationObserver>
                 </div>
               </b-col>
             </b-row>
@@ -108,6 +183,9 @@
 </template>
 
 <script>
+import {mask} from 'vue-the-mask'
+import { mapGetters, mapActions } from 'vuex'
+import PagarService from '@/services/pagar'
 import CardComponent from '@/components/CardComponent'
 import Bradcrumb from '@/components/Bradcrumb'
 
@@ -118,11 +196,16 @@ export default {
     CardComponent,
     Bradcrumb
   },
+  
+  directives: {mask},
 
   data () {
     return {
       form: {
-        selected: null
+        cardNumber: null,
+        cardName: null,
+        cardValidate: null,
+        cardSecurity: null,
       },
       select: {
         options: [
@@ -139,8 +222,61 @@ export default {
           { value: 10, text: '10'},
           { value: 11, text: '11'},
           { value: 12, text: '12'},
-        ]
+        ],
+        selected: null,
+      },
+      PagarService: null,
+    }
+  },
+
+  computed: {
+    ...mapGetters({
+      cardNumber: 'cardNumber',
+      cardName: 'cardName',
+      cardValidate: 'cardValidate',
+      cardSecurity: 'cardSecurity',
+    }),
+  },
+
+  created() {
+    this.PagarService = new PagarService()
+  },
+
+  methods: {
+    ...mapActions({
+      updateForm: 'updateForm',
+      clearForm: 'clearForm'
+    }),
+
+    async submit() {
+      const isValid = await this.$refs.observer.validate()
+      const obj = {
+        cardNumber: this.cardNumber.replace(/\s/g, ''),
+        cardName: this.cardName,
+        cardValidate: this.cardValidate,
+        cardSecurity: this.cardSecurity,
+        parcel: this.select.selected
       }
+      if (isValid) {
+        alert('Dados enviados ao back-end!')
+        this.PagarService.pagar(obj).then((response) => {
+        }).catch((error) => {
+          console.log(error)
+        })
+        this.clearForm()
+        this.form = {
+          cardNumber: null,
+          cardName: null,
+          cardValidate: null,
+          cardSecurity: null,
+        }
+        this.select.selected = null
+      }
+    },
+
+    changeInput($event) {
+      let obj = { key: $event.currentTarget.ariaLabel, value: $event.currentTarget.value}
+      this.updateForm(obj)
     }
   }
 }
@@ -182,17 +318,21 @@ export default {
 
     .form-container {
       position: relative;
+      margin-top: 50px;
       .icon-wrapper {
         position: absolute;
         right: 0;
+        bottom: 10px;
+
+        &.error-icon {
+          bottom: 32px;
+        }
+
         .info-icon  {
           background-color: #C9C9C9;
           width: 15px;
           height: 15px;
           border-radius: 50px;
-          position: relative;
-          top: 10px;
-          right: 15px;
 
           svg {
             vertical-align: top;

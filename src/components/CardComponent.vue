@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'card-component',
 
@@ -38,6 +40,15 @@ export default {
     }
   },
 
+  computed: {
+    ...mapGetters({
+      cardNumber: 'cardNumber',
+      cardName: 'cardName',
+      cardValidate: 'cardValidate',
+      cardSecurity: 'cardSecurity',
+    }),
+  },
+
   created() {
     this.checkScreen()
   },
@@ -45,10 +56,52 @@ export default {
   methods: {
     checkScreen() {
       const width = screen.width
+      this.containCardData = this.cardNumber || this.cardName || this.cardValidate
       if (width <= 1024) {
-        this.dynamicCardClass = 'empty-card-front-reponsive'
+        if(this.containCardData) this.dynamicCardClass = 'data-card-front-reponsive'
+        else this.dynamicCardClass = 'empty-card-front-reponsive'
+        
+      } else {
+        if(this.containCardData) this.dynamicCardClass = 'data-card-front'
+        else this.dynamicCardClass = 'empty-card-front'
       }
-    }
+    },
+  },
+
+  watch: {
+    cardNumber(value) {
+      if(value.length) {
+        this.numberCard = []
+        let val = value.split(' ', 4)
+        if(val.length == 1) this.numberCard = [val[0], '****', '****','****']
+        else if (val.length == 2) this.numberCard = [val[0], val[1], '****','****']
+        else if (val.length == 3) this.numberCard = [val[0], val[1],  val[2],'****']
+        else if (val.length == 4) this.numberCard = [val[0], val[1], val[2], val[3]]
+      } else {
+        this.numberCard = ['****', '****', '****', '****']
+      }
+
+      this.checkScreen()
+    },
+    cardName(value) {
+      if(value.length) this.nameCard = value
+      else this.nameCard = 'Nome do Titular'
+      this.checkScreen()
+    },
+    cardValidate(value) {
+      if(value.length) {
+        this.validateCard = []
+        let val = value.split('/', 2)
+        if(val.length == 1) this.validateCard = [val[0], '00']
+        else if (val.length == 2) this.validateCard = [val[0], val[1]]
+      } else {
+        this.validateCard = ['00', '00']
+      }
+      this.checkScreen()
+    },
+    cardSecurity(value) {
+      this.checkScreen()
+    },
   }
 }
 </script>
@@ -62,6 +115,7 @@ export default {
   &.empty-card-front {
     background-image: url('../assets/img/card-empty-front.png');
     min-width: 365px;
+    max-height: 225px;
     min-height: 225px;
     padding: 30px 20px 0;
   }
@@ -69,6 +123,30 @@ export default {
   &.empty-card-front-reponsive {
     background-image: url('../assets/img/card-empty-front-mobile.png');
     max-width: 280px;
+    max-height: 173px;
+    max-height: 173px;
+    padding: 30px 5px;
+    margin:0 auto;
+    position: relative;
+    top: 30px;
+
+    .card-number {
+      letter-spacing: 1px;
+    }
+  }
+
+  &.data-card-front {
+    background-image: url('../assets/img/card-data-front.png');
+    min-width: 365px;
+    min-height: 225px;
+    max-height: 225px;
+    padding: 30px 20px 0;
+  }
+
+  &.data-card-front-reponsive {
+    background-image: url('../assets/img/card-data-front-responsive.png');
+    max-width: 280px;
+    max-height: 173px;
     max-height: 173px;
     padding: 30px 5px;
     margin:0 auto;

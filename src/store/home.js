@@ -1,23 +1,47 @@
 export default {
   state: {
-    example: null,
+    cardNumber: null,
+    cardName: null,
+    cardValidate: null,
+    cardSecurity: null,
   },
 
   mutations: {
-    example(state, param) {
-      state.example = param
+    updateForm(state, param) {
+      state[param.key] = param.value
+    },
+    clearForm(state) {
+      state.cardNumber = ''
+      state.cardName = ''
+      state.cardValidate = ''
+      state.cardSecurity = ''
     },
   },
 
   actions: {
-    example(context, param) {
-      context.commit('example', param)
+    updateForm(context, param) {
+      context.commit('updateForm', param)
+    },
+    clearForm(context) {
+      context.commit('clearForm')
     },
   },
 
   getters: {
-    example: state => {
-      return state.example
+    cardNumber: state => {
+      return state.cardNumber
+    },
+
+    cardName: state => {
+      return state.cardName
+    },
+
+    cardValidate: state => {
+      return state.cardValidate
+    },
+
+    cardSecurity: state => {
+      return state.cardSecurity
     },
   }
 }
