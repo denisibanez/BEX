@@ -38,12 +38,16 @@ export default {
 .bradcrumb {
   display: flex;
   list-style: none;
-  margin-left: 70px;
   flex-wrap: wrap;
+  padding: 0;
   
   li {
     padding: 0 15px;
     display: flex;
+    
+    &:first-child {
+      padding-left: 0;
+    }
 
     span {
       border: 1px solid #DE4B4B;
